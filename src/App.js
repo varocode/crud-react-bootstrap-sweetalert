@@ -2,9 +2,9 @@ import "./App.css"; // Importa el archivo de estilos CSS
 import { useState } from "react"; // Importa la función useState de React, que permite manejar el estado del componente
 import Axios from "axios"; // Importa Axios para realizar solicitudes HTTP
 
-import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css"; // Importa los estilos de Bootstrap
 
-import Swal from "sweetalert2";
+import Swal from "sweetalert2"; // Importa SweetAlert2 para mostrar alertas personalizadas al usuario
 
 function App() {
   // Define el estado del componente con useState
@@ -13,11 +13,11 @@ function App() {
   const [pais, setPais] = useState(""); // Estado para el país del empleado
   const [cargo, setCargo] = useState(""); // Estado para el cargo del empleado
   const [anios, setAnios] = useState(); // Estado para los años de experiencia del empleado
-  const [id, setId] = useState();
+  const [id, setId] = useState(); // Estado para el ID del empleado
 
-  const [editar, setEditar] = useState(false);
+  const [editar, setEditar] = useState(false); // Estado para controlar si se está editando un empleado o no
 
-  const [empleadosList, setEmpleados] = useState([]);
+  const [empleadosList, setEmpleados] = useState([]); // Estado para almacenar la lista de empleados
 
   // Función para agregar un nuevo empleado
   const add = () => {
@@ -30,9 +30,9 @@ function App() {
       anios: anios,
     })
       .then(() => {
-        getEmpleados();
-        // Después de que la solicitud se complete, muestra una alerta indicando que el empleado ha sido registrado
-        limpiarCampos();
+        getEmpleados(); // Actualiza la lista de empleados después de agregar uno nuevo
+        limpiarCampos(); // Limpia los campos del formulario
+        // Muestra una alerta indicando que el empleado ha sido registrado exitosamente
         Swal.fire({
           title: "<strong>Empleado registrado!!!</strong>",
           html:
@@ -44,6 +44,7 @@ function App() {
         });
       })
       .catch(function (error) {
+        // En caso de error, muestra una alerta de error con un mensaje adecuado
         Swal.fire({
           icon: "error",
           title: "Error!",
@@ -56,6 +57,7 @@ function App() {
       });
   };
 
+  // Función para actualizar un empleado existente
   const update = () => {
     Axios.put("http://localhost:3001/update", {
       id: id,
@@ -66,8 +68,9 @@ function App() {
       anios: anios,
     })
       .then(() => {
-        getEmpleados();
-        limpiarCampos();
+        getEmpleados(); // Actualiza la lista de empleados después de la actualización
+        limpiarCampos(); // Limpia los campos del formulario
+        // Muestra una alerta indicando que el empleado ha sido actualizado exitosamente
         Swal.fire({
           title: "<strong>Empleado actualizado!!!</strong>",
           html:
@@ -79,6 +82,7 @@ function App() {
         });
       })
       .catch(function (error) {
+        // En caso de error, muestra una alerta de error con un mensaje adecuado
         Swal.fire({
           icon: "error",
           title: "Error!",
@@ -91,7 +95,9 @@ function App() {
       });
   };
 
+  // Función para eliminar un empleado
   const deleteEmpleado = (val) => {
+    // Muestra una confirmación al usuario antes de eliminar el empleado
     Swal.fire({
       title: "Confirmar eliminado?",
       html:
@@ -105,10 +111,12 @@ function App() {
       confirmButtonText: "Si, eliminarlo!",
     }).then((result) => {
       if (result.isConfirmed) {
+        // Si el usuario confirma, se realiza una solicitud DELETE al servidor para eliminar el empleado
         Axios.delete(`http://localhost:3001/delete/${val.id}`)
           .then(() => {
-            getEmpleados();
-            limpiarCampos();
+            getEmpleados(); // Actualiza la lista de empleados después de la eliminación
+            limpiarCampos(); // Limpia los campos del formulario
+            // Muestra una alerta indicando que el empleado ha sido eliminado exitosamente
             Swal.fire({
               title: "Eliminado!",
               text: val.nombre + " fue eliminado.",
@@ -117,6 +125,7 @@ function App() {
             });
           })
           .catch(function (error) {
+            // En caso de error, muestra una alerta de error con un mensaje adecuado
             Swal.fire({
               icon: "error",
               title: "Error!",
@@ -131,6 +140,7 @@ function App() {
     });
   };
 
+  // Función para limpiar los campos del formulario
   const limpiarCampos = () => {
     setNombre("");
     setEdad("");
@@ -141,6 +151,7 @@ function App() {
     setEditar(false);
   };
 
+  // Función para cargar los datos de un empleado en el formulario para editar
   const editarEmpleado = (val) => {
     setEditar(true);
 
@@ -153,28 +164,27 @@ function App() {
     setId(val.id);
   };
 
+  // Función para obtener la lista de empleados del servidor
   const getEmpleados = () => {
     Axios.get("http://localhost:3001/empleados")
       .then((response) => {
-        setEmpleados(response.data);
+        setEmpleados(response.data); // Actualiza la lista de empleados en el estado del componente
       })
       .catch((error) => {
         console.error("Error al obtener los empleados:", error);
         if (error.response) {
-          // La petición fue hecha y el servidor respondió con un estado de error
           console.error(error.response.data);
           console.error(error.response.status);
           console.error(error.response.headers);
         } else if (error.request) {
-          // La petición fue hecha pero no se recibió respuesta
           console.error(error.request);
         } else {
-          // Algo más causó un error
           console.error("Error", error.message);
         }
       });
   };
 
+  // Llama a la función para obtener la lista de empleados al cargar el componente
   getEmpleados();
 
   // Renderiza el componente
@@ -183,8 +193,8 @@ function App() {
       <div className="card text-center">
         <div className="card-header">GESTION DE EMPLEADOS</div>
         <div className="card-body">
-          {/* Etiquetas para ingresar los datos del empleado */}
-
+          {/* Formulario para ingresar los datos del empleado */}
+          {/* Input para el nombre */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               Nombre:
@@ -202,6 +212,7 @@ function App() {
             />
           </div>
 
+          {/* Input para la edad */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               Edad:
@@ -219,6 +230,7 @@ function App() {
             />
           </div>
 
+          {/* Input para el país */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               País:
@@ -236,6 +248,7 @@ function App() {
             />
           </div>
 
+          {/* Input para el cargo */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               Cargo:
@@ -253,6 +266,7 @@ function App() {
             />
           </div>
 
+          {/* Input para los años de experiencia */}
           <div className="input-group mb-3">
             <span className="input-group-text" id="basic-addon1">
               Años:
@@ -271,6 +285,7 @@ function App() {
           </div>
         </div>
         <div className="card-footer text-muted">
+          {/* Botones para registrar o actualizar un empleado, dependiendo del estado de edición */}
           {editar ? (
             <div>
               <button className="btn btn-warning m-2" onClick={update}>
@@ -289,6 +304,7 @@ function App() {
         </div>
       </div>
 
+      {/* Tabla para mostrar la lista de empleados */}
       <table className="table table-striped">
         <thead>
           <tr>
@@ -302,8 +318,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {/*<button onClick={getEmpleados}>Listar</button>*/}
-
+          {/* Mapea la lista de empleados y renderiza cada fila de la tabla */}
           {empleadosList.map((val, key) => {
             return (
               <tr key={val.id}>
@@ -314,6 +329,7 @@ function App() {
                 <td>{val.cargo}</td>
                 <td>{val.anios}</td>
                 <td>
+                  {/* Botones para editar o eliminar un empleado */}
                   <div
                     className="btn-group"
                     role="group"
@@ -322,7 +338,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => {
-                        editarEmpleado(val);
+                        editarEmpleado(val); // Carga los datos del empleado en el formulario para editar
                       }}
                       className="btn btn-info"
                     >
@@ -331,7 +347,7 @@ function App() {
                     <button
                       type="button"
                       onClick={() => {
-                        deleteEmpleado(val);
+                        deleteEmpleado(val); // Elimina al empleado
                       }}
                       className="btn btn-danger"
                     >
